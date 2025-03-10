@@ -71,7 +71,7 @@ func meanSpeed(steps int, duration time.Duration) float64 {
 func TrainingInfo(data string, weight, height float64) string {
 	steps, activity, duration, err := parseTraining(data)
 	if err != nil {
-		return "Ошибка при парсинге данных"
+		return fmt.Sprintf("Data parsing error: %s", err)
 	}
 
 	var distance1 float64

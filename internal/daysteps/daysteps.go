@@ -17,17 +17,17 @@ var (
 func parsePackage(data string) (int, time.Duration, error) {
 	parts := strings.Split(data, ",")
 	if len(parts) != 2 {
-		return 0, 0, errors.New("неверный формат данных")
+		return 0, 0, errors.New("data format error")
 	}
 
 	steps, err := strconv.Atoi(parts[0])
 	if err != nil || steps <= 0 {
-		return 0, 0, errors.New("ошибка парсинга количества шагов")
+		return 0, 0, errors.New("step count parsing error")
 	}
 
 	duration, err := time.ParseDuration(parts[1])
 	if err != nil {
-		return 0, 0, errors.New("ошибка парсинга продолжительности")
+		return 0, 0, errors.New("duration parsing error")
 	}
 
 	return steps, duration, nil
@@ -42,16 +42,17 @@ func parsePackage(data string) (int, time.Duration, error) {
 func DayActionInfo(data string, weight, height float64) string {
 	steps, duration, err := parsePackage(data)
 	if err != nil {
-		fmt.Println("Ошибка парсинга данных:", err)
+		fmt.Println("Data parsing error:", err)
 		return ""
 	}
 
 	if steps <= 0 {
+		fmt.Println("Steps count error")
 		return ""
 	}
 
-	distance := float64(steps) * StepLength
-	calories := spentcalories.WalkingSpentCalories(int(weight), height, distance, duration)
+	distance := float64(steps) * StepLength / 1000
+	calories := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
 
 	return fmt.Sprintf(
 		"Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.",
